@@ -1,0 +1,399 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+
+
+
+
+        <record id="view_hr_attendance_form_inherit" model="ir.ui.view">
+            <field name="name">hr.attendance.form.inherit</field>
+            <field name="model">hr.attendance</field>
+            <field name="inherit_id" ref="hr_attendance.hr_attendance_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//sheet" position="replace">
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button class="oe_stat_button"
+                                    string="Project Output"
+                                    type="object"
+                                    name="btn_project_output_ids" icon="fa-tasks">
+                            </button>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="company_id" invisible="1"/>
+                                <field name="readonly_employee_id" invisible="1"/>
+                                <field name="employee_id" attrs="{'readonly':[('readonly_employee_id', '=', True)]}"/>
+                                <field name="check_in" attrs="{'readonly': [('state','!=','draft')]}"/>
+                                <field name="check_out" attrs="{'readonly': [('state','!=','draft')]}"/>
+                                <field name="duration" widget="float_time" readonly="1"/>
+                                <field name="department_id" readonly="1"/>
+                                <field name="schedule_id" readonly="1"/>
+                                <field name="leave_soon" readonly="1"/>
+                                <field name="available_late" readonly="1"/>
+                                <field name="notes" readonly="1"/>
+                                <field name="outside_calendar_duration" widget="float_time" readonly="1"/>
+                                <field name="inside_calendar_duration" widget="float_time" readonly="1"/>
+                                <field name="user_id" readonly="1"/>
+                                <field name="time_arrive_late_in_minute" readonly="1"/>
+                                <field name="time_leave_soon_in_minute" readonly="1"/>
+                                <field name="fine_arrive_late" attrs="{'readonly': [('state','!=','draft')]}"/>
+                                <field name="fine_leave_soon" attrs="{'readonly': [('state','!=','draft')]}"/>
+                                <field name="fine" readonly="1">
+                                </field>
+                            </group>
+                            <group>
+                                <label for="image_medium_1" string="Check In Out Image"/>
+                                <div>
+                                    <field name="image_medium_1" widget="image" class="oe_avatar oe_inline"/>
+                                    <field name="image_medium_2" widget="image" class="oe_avatar oe_inline"/>
+                                </div>
+                                <label for="check_in_latitude" string="Check In Coordinates"/>
+                                <div>
+                                    <field name="check_in_latitude" class="oe_inline"/>
+                                    <field name="check_in_longitude" class="oe_inline"/>
+                                </div>
+                                <label for="check_in_longitude" string="Check Out Coordinates"/>
+                                <div>
+                                    <field name="check_in_longitude" class="oe_inline"/>
+                                    <field name="check_out_longitude" class="oe_inline"/>
+                                </div>
+
+<!--                                <field name="project_id"/>-->
+<!--                                <field name="project_output_ids" nolabel="1"/>-->
+                            </group>
+                        </group>
+                    </sheet>
+
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_helpdesk_ticket_form_inherit" model="ir.ui.view">
+            <field name="name">helpdesk.ticket.form.inherit</field>
+            <field name="model">helpdesk.ticket</field>
+            <field name="inherit_id" ref="helpdesk.helpdesk_ticket_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='ticket_type_id']" position="after">
+                    <field name="project_id"/>
+                </xpath>
+            </field>
+        </record>
+
+
+        <record id="hr_employee_view_form_inherit" model="ir.ui.view">
+            <field name="name">hr.hr.employee.view.form2</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_form"/>
+            <field name="arch" type="xml">
+                <data>
+                    <xpath expr="//group[@name='active_group']" position="after">
+                        <group string="SAM ACCOUNT">
+                            <field name="sam_user"/>
+                            <field name="sam_password"/>
+                            <!--                            <field name="sam_role"/>-->
+                        </group>
+                    </xpath>
+
+                </data>
+            </field>
+        </record>
+
+        <record id="project_invoice_form" model="ir.ui.view">
+            <field name="name">Inherit project form : Invoicing Data</field>
+            <field name="model">project.project</field>
+            <field name="inherit_id" ref="project.edit_project"/>
+            <field name="priority">24</field>
+            <field name="arch" type="xml">
+                <button name="toggle_active" position="before">
+                    <button class="oe_stat_button" type="object" attrs="{'invisible':[('use_tasks','=', False)]}" name="btn_open_ticket_tree" icon="fa-tasks">
+                        <field string="Ticket" name="ticket_count" widget="statinfo" modifiers="{'readonly': true}"/>
+                    </button>
+                    <button class="oe_stat_button" string="Project Holidays" type="object" attrs="{'invisible':[('use_tasks','=', False)]}" name="btn_open_project_holidays_tree" icon="fa-tasks">
+                        <!--                        <field string="Project Holidays" name="ticket_count" widget="statinfo" modifiers="{'readonly': true}"/>-->
+                    </button>
+                    <button class="oe_stat_button" string="Project Output" type="object" attrs="{'invisible':[('use_tasks','=', False)]}" name="btn_open_project_output_tree" icon="fa-tasks">
+                        <!--                        <field string="Project Holidays" name="ticket_count" widget="statinfo" modifiers="{'readonly': true}"/>-->
+                    </button>
+                    <button class="oe_stat_button" string="Project Notification" type="object" attrs="{'invisible':[('use_tasks','=', False)]}" name="btn_open_project_notification_tree" icon="fa-tasks">
+                        <!--                        <field string="Project Holidays" name="ticket_count" widget="statinfo" modifiers="{'readonly': true}"/>-->
+                    </button>
+                </button>
+
+                <xpath expr="//field[@name='partner_id']" position="after">
+                    <field name="customer_login"/>
+                    <field name="customer_account" attrs="{'invisible': [('customer_login','=',False)]}"/>
+<!--                    <field name="customer_user" attrs="{'invisible': [('customer_login','=',False)]}"/>-->
+<!--                    <field name="customer_password" attrs="{'invisible': [('customer_login','=',False)]}"/>-->
+                </xpath>
+                <xpath expr="//notebook" position="inside">
+                    <page string="Information">
+                        <group>
+                            <group>
+                                <field name="checkin_type"/>
+                                <field name="quantity_report"/>
+                                <field name="check_quantity"/>
+                                <field name="count_report_image"/>
+                                <field name="info_description"/>
+                            </group>
+                            <group>
+                                <field name="hr_department_id"/>
+                                <field name="project_location_ids" widget="many2many_tags"/>
+                                <field name="project_shiftis_ids" widget="many2many_tags"/>
+                                <field name="hr_job_position_ids" widget="many2many_tags"/>
+                            </group>
+
+                        </group>
+                    </page>
+
+                    <page string="Project Member">
+                        <field name="id" invisible="1"/>
+                        <!--                        <button class="oe_stat_button" type="object" name="btn_add_member" icon="fa-pencil-square-o" context="{'default_project_id': id}">-->
+                        <!--                            <div class="o_stat_info">-->
+                        <!--                                <span class="o_stat_text">-->
+                        <!--                                    Add Member-->
+                        <!--                                </span>-->
+                        <!--                            </div>-->
+                        <!--                        </button>-->
+                        <field name="project_member_ids">
+                            <tree>
+                                <field name="employee_id"
+                                       options="{'no_quick_create': True, 'no_create': True, 'no_open': True, 'no_edit': True}"/>
+                                <field name="project_shiftis_id"
+                                       options="{'no_quick_create': True, 'no_create': True, 'no_open': True, 'no_edit': True}"/>
+                                <field name="project_role"
+                                       options="{'no_quick_create': True, 'no_create': True, 'no_open': True, 'no_edit': True}"/>
+                                <field name="project_location_id"
+                                       options="{'no_quick_create': True, 'no_create': True, 'no_open': True, 'no_edit': True}"/>
+                                <field name="job_position_id"
+                                       options="{'no_quick_create': True, 'no_create': True, 'no_open': True, 'no_edit': True}"/>
+                            </tree>
+                        </field>
+                    </page>
+
+
+
+                </xpath>
+            </field>
+        </record>
+
+
+        <record id="view_project_member_form" model="ir.ui.view">
+            <field name="name">view.project.member.form</field>
+            <field name="model">project.member</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="employee_id" required="1" options="{'no_quick_create': True, 'no_create': True, 'no_open': True, 'no_edit': True}"/>
+                                <field name="project_id" invisible="1"/>
+                                <field name="project_role" required="1"/>
+                            </group>
+                            <group>
+                                <field name="project_shiftis_id" required="1" options="{'no_quick_create': True, 'no_create': True, 'no_open': True, 'no_edit': True}"/>
+                                <field name="project_location_id" required="1" options="{'no_quick_create': True, 'no_create': True, 'no_open': True, 'no_edit': True}"/>
+                                <field name="job_position_id" required="1" options="{'no_quick_create': True, 'no_create': True, 'no_open': True, 'no_edit': True}"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="action_view_project_member" model="ir.actions.act_window">
+            <field name="name">Project Member</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">project.member</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <record id="view_project_shiftis_form" model="ir.ui.view">
+            <field name="name">view.project.shiftis.form</field>
+            <field name="model">project.shiftis</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="active"/>
+                        </group>
+                        <group>
+                            <field name="start_time" widget="float_time"/>
+                            <field name="end_time" widget="float_time"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_project_shiftis_tree" model="ir.ui.view">
+            <field name="name">view.project.shiftis.tree</field>
+            <field name="model">project.shiftis</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="start_time"/>
+                    <field name="end_time"/>
+                    <field name="active"/>
+                </tree>
+            </field>
+        </record>
+
+
+
+
+        <record id="action_view_project_shiftis" model="ir.actions.act_window">
+            <field name="name">Project Shiftis</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">project.shiftis</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+        <!--        -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;-->
+        <record id="view_project_locations_form" model="ir.ui.view">
+            <field name="name">view.project.locations.form</field>
+            <field name="model">project.locations</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <label for="street" string="Address Detail"/>
+                            <div class="o_address_format">
+                                <field name="street" placeholder="Street..." class="o_address_street"/>
+                                <field name="city" placeholder="District" class="o_address_city"/>
+                                <field name="state_id" class="o_address_state" placeholder="City/Province" options="{'no_create': True, 'no_create_edit': True, 'no_open': True}" context="{'country_id': country_id, 'zip': zip}" can_create="true" can_write="true"/>
+                                <field name="zip" placeholder="ZIP" class="o_address_zip"/>
+                                <field name="country_id" placeholder="Country" class="o_address_country" options="{'no_open': True, 'no_create': True}" on_change="1" can_create="true" can_write="true"/>
+                            </div>
+                        </group>
+                        <group>
+                            <field name="latitude"/>
+                            <field name="longitude"/>
+                            <field name="active"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_project_locations_tree" model="ir.ui.view">
+            <field name="name">view.project.locations.tree</field>
+            <field name="model">project.locations</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="latitude"/>
+                    <field name="longitude"/>
+                    <field name="active"/>
+                </tree>
+            </field>
+        </record>
+        <record id="view_project_output_tree" model="ir.ui.view">
+            <field name="name">view.project.output.tree</field>
+            <field name="model">project.output</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="quantity"/>
+                    <field name="product_uom_id"/>
+                    <field name="active"/>
+                </tree>
+            </field>
+        </record>
+        <record id="view_project_holidays_tree" model="ir.ui.view">
+            <field name="name">view.project.holidays.tree</field>
+            <field name="model">project.holidays</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="off_date"/>
+                    <field name="active"/>
+                    <field name="project_id"/>
+                </tree>
+            </field>
+        </record>
+
+
+
+
+        <record id="action_view_project_locations" model="ir.actions.act_window">
+            <field name="name">Project Locations</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">project.locations</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+
+
+        <record id="view_project_notification_form" model="ir.ui.view">
+            <field name="name">view.project.notification.form</field>
+            <field name="model">project.notification</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="active"/>
+                            </group>
+                            <group>
+                                <field name="description"/>
+                                <field name="specail_list" widget="many2many_tags" options="{'no_open': True, 'no_create': True}"/>
+                                <field name="all"/>
+                            </group>
+                        </group>
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_project_notification_tree" model="ir.ui.view">
+            <field name="name">view.project.notification.tree</field>
+            <field name="model">project.notification</field>
+            <field name="type">tree</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="description"/>
+                    <field name="create_date"/>
+                    <field name="all"/>
+                    <field name="active"/>
+                </tree>
+            </field>
+        </record>
+
+
+
+
+        <record id="action_view_project_shiftis" model="ir.actions.act_window">
+            <field name="name">Project Shiftis</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">project.notification</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+
+
+        <menuitem id="menu_project_locations_config" name="Project Locations" parent="project.menu_project_config" action='action_view_project_locations'/>
+        <menuitem id="menu_project_shiftis" name="Project Shiftis" parent="project.menu_project_config" action='action_view_project_shiftis'/>
+
+    </data>
+</odoo>
